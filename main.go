@@ -6,6 +6,7 @@ import (
 
 	"fyne.io/fyne/v2/app"
 	"github.com/kedare/go-dashink/pkg/gui"
+	"github.com/kedare/go-dashink/pkg/output"
 )
 
 func main() {
@@ -14,4 +15,5 @@ func main() {
 	window := gui.BuildWindow(app)
 	log.Println("Showing GUI")
 	window.ShowAndRun()
+	output.CaptureWindowToFile(window, "screenshot.png")
 }

@@ -1,10 +1,11 @@
 package gui
 
 import (
+	"image/color"
+
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/widget"
-	"github.com/kedare/go-dashink/pkg/output"
 )
 
 const (
@@ -13,19 +14,15 @@ const (
 )
 
 func BuildWindow(app fyne.App) fyne.Window {
-	w := app.NewWindow("Dashink")
-	w.Resize(fyne.NewSize(WIDTH, HEIGHT))
-	w.SetFixedSize(true)
+	window := app.NewWindow("Dashink")
+	window.Resize(fyne.NewSize(WIDTH, HEIGHT))
+	window.SetFixedSize(true)
 
-	hello := widget.NewLabel("Hello Fyne!")
-	w.SetContent(container.NewVBox(
-		hello,
-		widget.NewButton("Hi!", func() {
-			hello.SetText("Welcome :)")
-			output.CaptureWindowToFile(w, "screenshot.png")
-			w.Close()
-		}),
-	))
+	top := canvas.NewText("top bar", color.White)
+	left := canvas.NewText("left", color.White)
+	middle := canvas.NewText("content", color.White)
+	content := container.NewBorder(top, nil, left, nil, middle)
+	window.SetContent(content)
 
-	return w
+	return window
 }
