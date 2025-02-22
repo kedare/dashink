@@ -1,0 +1,14 @@
+version: 3
+
+tasks:
+  clean:
+    cmds:
+      - rm main.exe main
+
+  build:
+    cmds:
+      - go build main.go
+
+  run:
+    cmds:
+      - go run main.go
