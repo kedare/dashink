@@ -20,7 +20,7 @@ func main() {
 		log.Println("Starting screenshot goroutine")
 		time.Sleep(1 * time.Second)
 		output.CaptureWindowToFile(window, "screenshot.png")
-		os.Exit()
+		os.Exit(0)
 	}()
 	window.ShowAndRun()
 }
