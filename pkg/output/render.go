@@ -8,13 +8,12 @@ import (
 	"fyne.io/fyne/v2"
 )
 
-// CaptureWindowToFile captures the current content of a Fyne window's canvas
+// CaptureCanvasToFile captures the current content of a Fyne window's canvas
 // and saves it to a file with the specified fileName.
 // It creates a new RGBA image from the captured content and encodes it as a PNG.
-func CaptureWindowToFile(w fyne.Window, fileName string) {
-	log.Println("Starting saving screenshot")
+func CaptureCanvasToFile(c fyne.Canvas, fileName string) {
 	// Capture the current window's canvas content
-	img := w.Canvas().Capture()
+	img := c.Capture()
 
 	// Create a file to save the image
 	f, err := os.Create(fileName)

@@ -1,4 +1,4 @@
-module github.com/kedare/go-dashink
+module github.com/kedare/dashink
 
 go 1.24.0
 

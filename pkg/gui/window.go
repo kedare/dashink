@@ -6,6 +6,8 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/theme"
+	"fyne.io/fyne/v2/tools/playground"
 )
 
 const (
@@ -13,16 +15,18 @@ const (
 	HEIGHT = 480
 )
 
-func BuildWindow(app fyne.App) fyne.Window {
-	window := app.NewWindow("Dashink")
-	window.Resize(fyne.NewSize(WIDTH, HEIGHT))
-	window.SetFixedSize(true)
+func BuildCanvas(app fyne.App) fyne.Canvas {
+	c := playground.NewSoftwareCanvas()
+	c.SetPadded(false)
+
+	fyne.CurrentApp().Settings().SetTheme(theme.DarkTheme())
 
 	top := canvas.NewText("top bar", color.White)
 	left := canvas.NewText("left", color.White)
 	middle := canvas.NewText("content", color.White)
 	content := container.NewBorder(top, nil, left, nil, middle)
-	window.SetContent(content)
+	c.SetContent(content)
+	c.Resize(fyne.NewSize(WIDTH, HEIGHT))
 
-	return window
+	return c
 }

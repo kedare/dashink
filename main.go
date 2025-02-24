@@ -4,23 +4,16 @@ import (
 	_ "image/png"
 	"log"
 	"os"
-	"time"
 
 	"fyne.io/fyne/v2/app"
-	"github.com/kedare/go-dashink/pkg/gui"
-	"github.com/kedare/go-dashink/pkg/output"
+	"github.com/kedare/dashink/pkg/gui"
+	"github.com/kedare/dashink/pkg/output"
 )
 
 func main() {
 	log.Println("Starting")
 	app := app.New()
-	window := gui.BuildWindow(app)
-	log.Println("Showing GUI")
-	go func() {
-		log.Println("Starting screenshot goroutine")
-		time.Sleep(1 * time.Second)
-		output.CaptureWindowToFile(window, "screenshot.png")
-		os.Exit(0)
-	}()
-	window.ShowAndRun()
+	canvas := gui.BuildCanvas(app)
+	output.CaptureCanvasToFile(canvas, "screenshot.png")
+	os.Exit(0)
 }
