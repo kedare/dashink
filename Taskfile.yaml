@@ -12,3 +12,11 @@ tasks:
   run:
     cmds:
       - go run main.go
+
+  run-draw:
+    cmds:
+      - go run main.go -draw
+
+  run-save:
+    cmds:
+      - go run main.go -save

@@ -1,9 +1,11 @@
 package output
 
 import (
+	"image"
 	"image/png"
-	"log"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 
 	"fyne.io/fyne/v2"
 )
@@ -28,4 +30,9 @@ func CaptureCanvasToFile(c fyne.Canvas, fileName string) {
 		log.Fatal(err)
 	}
 	log.Println("Screenshot saved to", fileName)
+}
+
+func CaptureCanvasToImage(c fyne.Canvas) image.Image {
+	img := c.Capture()
+	return img
 }
