@@ -2,6 +2,7 @@ package hardware
 
 import (
 	"errors"
+	"flag"
 	"image"
 
 	log "github.com/sirupsen/logrus"
@@ -12,19 +13,15 @@ import (
 	"periph.io/x/host/v3"
 )
 
-// Make it configurable
-const (
-	dcPin    = "18"
-	resetPin = "27"
-	busyPin  = "17"
-	mosiPin  = "10"
-	misoPin  = "9"
-	clkPin   = "11"
-	spiPort  = "SPI0.0"
-)
-
 var (
-	device *inky.DevImpression
+	dcPin    = flag.String("dc", "22", "DC pin")
+	resetPin = flag.String("reset", "27", "Reset pin")
+	busyPin  = flag.String("busy", "17", "Busy pin")
+	mosiPin  = flag.String("mosi", "10", "MOSI pin")
+	misoPin  = flag.String("miso", "9", "MISO pin")
+	clkPin   = flag.String("clk", "11", "CLK pin")
+	spiPort  = flag.String("spi", "SPI0.0", "SPI port")
+	device   *inky.DevImpression
 )
 
 func Setup() error {
