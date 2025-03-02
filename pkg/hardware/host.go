@@ -15,10 +15,9 @@ import (
 
 // Make it configurable
 const (
-	model    = inky.IMPRESSION73
 	dcPin    = "GPIO18"
-	resetPin = "GPIO17"
-	busyPin  = "GPIO27"
+	resetPin = "GPIO27"
+	busyPin  = "GPIO17"
 	mosiPin  = "GPIO10"
 	misoPin  = "GPIO9"
 	clkPin   = "GPIO11"
@@ -60,7 +59,10 @@ func Setup() error {
 	}
 
 	device, err = inky.NewImpression(spi, dc, reset, busy, &inky.Opts{
-		Model: model,
+		Model:      inky.IMPRESSION73,
+		ModelColor: inky.Multi,
+		Height:     800,
+		Width:      480,
 	})
 	if err != nil {
 		log.WithError(err).Errorln("failed to create inky device")
