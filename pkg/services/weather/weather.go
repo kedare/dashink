@@ -1,25 +1,22 @@
 package weather
 
 import (
-	"encoding/json"
+	"bytes"
 	"errors"
 	"fmt"
+	"image"
+	"image/png"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 
+	"github.com/briandowns/openweathermap"
 	log "github.com/sirupsen/logrus"
 )
 
 var (
-	apiKey    = os.Getenv("OPENWEATHERMAP_API_KEY")
-	latitude  = getEnvWithDefault("WEATHER_LATITUDE", "41.4006716")
-	longitude = getEnvWithDefault("WEATHER_LONGITUDE", "2.1832604")
-
-	urlCurrentWeather = "https://api.openweathermap.org/data/2.5/weather"
-	urlHourlyWeather  = "https://api.openweathermap.org/data/2.5/forecast"
-	urlCurrentAQI     = "http://api.openweathermap.org/data/2.5/air_pollution"
+	apiKey = os.Getenv("OPENWEATHERMAP_API_KEY")
 )
 
 func getEnvWithDefault(key, defaultValue string) string {
@@ -29,22 +26,30 @@ func getEnvWithDefault(key, defaultValue string) string {
 	return defaultValue
 }
 
-func iconURL(iconCode string) string {
+func IconURL(iconCode string) string {
 	return fmt.Sprintf("http://openweathermap.org/img/wn/%s@2x.png", iconCode)
 }
 
-func iconImage(iconCode string) ([]byte, error) {
-	fileName := filepath.Join("cache", iconCode+".png")
+func IconImage(iconCode string) (image.Image, error) {
+	cacheDir := "cache"
+	if _, err := os.Stat(cacheDir); os.IsNotExist(err) {
+		os.Mkdir(cacheDir, 0755)
+	}
+	fileName := filepath.Join(cacheDir, iconCode+".png")
 	log.WithField("fileName", fileName).Debugln("Getting weather icon")
 
 	// If the file exists, return it
 	if data, err := os.ReadFile(fileName); err == nil {
 		log.WithField("fileName", fileName).Debugln("Using cached weather icon")
-		return data, nil
+		image, err := png.Decode(bytes.NewReader(data))
+		if err != nil {
+			return nil, err
+		}
+		return image, nil
 	}
 
 	// Get the icon URL
-	url := iconURL(iconCode)
+	url := IconURL(iconCode)
 
 	// Download the icon
 	log.WithField("url", url).Debugln("Downloading weather icon")
@@ -71,94 +76,83 @@ func iconImage(iconCode string) ([]byte, error) {
 		return nil, err
 	}
 
-	return iconData, nil
+	image, err := png.Decode(bytes.NewReader(iconData))
+	if err != nil {
+		return nil, err
+	}
+
+	return image, nil
 }
 
-func currentWeather() (map[string]interface{}, error) {
-	log.Debugln("Fetching weather info")
-
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", urlCurrentWeather, nil)
+// GetCurrentWeather retrieves the current weather data including max and min temperatures
+// from OpenWeatherMap API for the specified location using the briandowns/openweathermap library
+func GetCurrentWeather(lat, lon float64) (*openweathermap.CurrentWeatherData, error) {
+	w, err := openweathermap.NewCurrent("C", "en", apiKey)
 	if err != nil {
+		log.WithError(err).Errorln("Failed to create OpenWeatherMap client")
 		return nil, err
 	}
 
-	q := req.URL.Query()
-	q.Add("lat", latitude)
-	q.Add("lon", longitude)
-	q.Add("appid", apiKey)
-	q.Add("units", "metric")
-	req.URL.RawQuery = q.Encode()
+	log.WithFields(log.Fields{
+		"lat": lat,
+		"lon": lon,
+	}).Debugln("Fetching current weather data")
 
-	resp, err := client.Do(req)
+	err = w.CurrentByCoordinates(&openweathermap.Coordinates{
+		Latitude:  lat,
+		Longitude: lon,
+	})
+
 	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	var result map[string]interface{}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		log.WithError(err).Errorln("Failed to fetch weather data")
 		return nil, err
 	}
 
-	return result, nil
+	log.WithFields(log.Fields{
+		"temp":        w.Main.Temp,
+		"temp_min":    w.Main.TempMin,
+		"temp_max":    w.Main.TempMax,
+		"description": w.Weather[0].Description,
+	}).Debugln("Weather data retrieved successfully")
+
+	return w, nil
 }
 
-func currentAQI() (map[string]interface{}, error) {
-	log.Debugln("Fetching air quality info")
-
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", urlCurrentAQI, nil)
+// GetCurrentAQI retrieves the current Air Quality Index (AQI) data
+// from OpenWeatherMap API for the specified location using the briandowns/openweathermap library
+func GetCurrentAQI(lat, lon float64) (*openweathermap.PollutionData, error) {
+	a, err := openweathermap.NewPollution(apiKey)
 	if err != nil {
+		log.WithError(err).Errorln("Failed to create OpenWeatherMap AQI client")
 		return nil, err
 	}
 
-	q := req.URL.Query()
-	q.Add("lat", latitude)
-	q.Add("lon", longitude)
-	q.Add("appid", apiKey)
-	req.URL.RawQuery = q.Encode()
+	log.WithFields(log.Fields{
+		"lat": lat,
+		"lon": lon,
+	}).Debugln("Fetching current AQI data")
 
-	resp, err := client.Do(req)
+	params := openweathermap.PollutionParameters{
+		Location: openweathermap.Coordinates{
+			Latitude:  lat,
+			Longitude: lon,
+		},
+	}
+
+	err = a.PollutionByParams(&params)
+
 	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	var result map[string]interface{}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		log.WithError(err).Errorln("Failed to fetch AQI data")
 		return nil, err
 	}
 
-	return result, nil
-}
+	aqi := a.List[0].Main.Aqi
 
-func hourlyWeather() (map[string]interface{}, error) {
-	log.Debugln("Fetching hourly weather info")
+	log.WithFields(log.Fields{
+		"aqi":        aqi,
+		"components": a.List[0].Components,
+		"time":       a.List[0].Dt,
+	}).Debugln("AQI data retrieved successfully")
 
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", urlHourlyWeather, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	q := req.URL.Query()
-	q.Add("lat", latitude)
-	q.Add("lon", longitude)
-	q.Add("appid", apiKey)
-	q.Add("units", "metric")
-	req.URL.RawQuery = q.Encode()
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	var result map[string]interface{}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, err
-	}
-
-	return result, nil
+	return &a.List[0], nil
 }

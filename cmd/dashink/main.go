@@ -5,6 +5,8 @@ import (
 	_ "image/png"
 	"os"
 
+	stdlog "log"
+
 	log "github.com/sirupsen/logrus"
 
 	"fyne.io/fyne/v2/app"
@@ -22,12 +24,15 @@ var (
 func main() {
 	flag.Parse()
 	log.Println("Starting")
-	app := app.New()
-	canvas := gui.BuildCanvas(app)
 
 	if *debug {
+		stdlog.SetFlags(stdlog.LstdFlags | stdlog.Lshortfile)
 		log.SetLevel(log.DebugLevel)
+		log.Debugln("Debug mode enabled")
 	}
+
+	app := app.New()
+	canvas := gui.BuildCanvas(app)
 
 	if *save {
 		log.Println("Saving screenshot to file")

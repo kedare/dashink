@@ -13,7 +13,8 @@
         "args": [
             "-debug",
             "-draw"
-        ]
+        ],
+        "cwd": "${workspaceFolder}"
     },
     {
         "name": "Debug Save",
@@ -24,7 +25,11 @@
         "args": [
             "-debug",
             "-save"
-        ]
+        ],
+        "cwd": "${workspaceFolder}",
+        "env": {
+            "OPENWEATHERMAP_API_KEY": "XXX"
+        }
     }
     ]
 }
