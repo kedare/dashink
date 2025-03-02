@@ -30,25 +30,25 @@ func Setup() error {
 		return err
 	}
 
-	dc := gpioreg.ByName(dcPin)
+	dc := gpioreg.ByName(*dcPin)
 	if dc == nil {
 		log.Errorln("failed to get GPIO for DC pin")
 		return errors.New("failed to get GPIO for DC pin")
 	}
 
-	reset := gpioreg.ByName(resetPin)
+	reset := gpioreg.ByName(*resetPin)
 	if reset == nil {
 		log.Errorln("failed to get GPIO for reset pin")
 		return errors.New("failed to get GPIO for reset pin")
 	}
 
-	busy := gpioreg.ByName(busyPin)
+	busy := gpioreg.ByName(*busyPin)
 	if busy == nil {
 		log.Errorln("failed to get GPIO for busy pin")
 		return errors.New("failed to get GPIO for busy pin")
 	}
 
-	spi, err := spireg.Open(spiPort)
+	spi, err := spireg.Open(*spiPort)
 	if err != nil {
 		log.WithError(err).Errorln("failed to open SPI:")
 		return err
