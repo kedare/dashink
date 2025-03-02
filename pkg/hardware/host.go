@@ -2,7 +2,6 @@ package hardware
 
 import (
 	"errors"
-	"fmt"
 	"image"
 
 	log "github.com/sirupsen/logrus"
@@ -15,12 +14,12 @@ import (
 
 // Make it configurable
 const (
-	dcPin    = "GPIO18"
-	resetPin = "GPIO27"
-	busyPin  = "GPIO17"
-	mosiPin  = "GPIO10"
-	misoPin  = "GPIO9"
-	clkPin   = "GPIO11"
+	dcPin    = "18"
+	resetPin = "27"
+	busyPin  = "17"
+	mosiPin  = "10"
+	misoPin  = "9"
+	clkPin   = "11"
 	spiPort  = "SPI0.0"
 )
 
@@ -68,24 +67,27 @@ func Setup() error {
 		log.WithError(err).Errorln("failed to create inky device")
 	}
 
-	log.Println("Inky device created")
+	log.Debugln("Inky device created")
 
 	return nil
 }
 
 func DrawImage(img image.Image) error {
 	if device == nil {
-		return fmt.Errorf("device not initialized - call Setup() first")
+		log.Errorln("device not initialized - call Setup() first")
+		return errors.New("device not initialized - call Setup() first")
 	}
 
 	bounds := img.Bounds()
 	if bounds.Dx() != device.Width() || bounds.Dy() != device.Height() {
-		return fmt.Errorf("image dimensions %dx%d do not match device dimensions %dx%d",
+		log.Errorf("image dimensions %dx%d do not match device dimensions %dx%d",
 			bounds.Dx(), bounds.Dy(), device.Width(), device.Height())
+		return errors.New("image dimensions do not match device dimensions")
 	}
 
 	if err := device.Draw(bounds, img, image.Point{}); err != nil {
-		return fmt.Errorf("failed to draw image: %w", err)
+		log.WithError(err).Errorln("failed to draw image")
+		return err
 	}
 
 	return nil

@@ -2,17 +2,17 @@ package weather
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
+
+	log "github.com/sirupsen/logrus"
 )
 
 var (
-	logger = log.Default()
-
 	apiKey    = os.Getenv("OPENWEATHERMAP_API_KEY")
 	latitude  = getEnvWithDefault("WEATHER_LATITUDE", "41.4006716")
 	longitude = getEnvWithDefault("WEATHER_LONGITUDE", "2.1832604")
@@ -35,11 +35,11 @@ func iconURL(iconCode string) string {
 
 func iconImage(iconCode string) ([]byte, error) {
 	fileName := filepath.Join("cache", iconCode+".png")
-	logger.Printf("Getting weather icon: %s", fileName)
+	log.WithField("fileName", fileName).Debugln("Getting weather icon")
 
 	// If the file exists, return it
 	if data, err := os.ReadFile(fileName); err == nil {
-		logger.Printf("Using cached weather icon: %s", fileName)
+		log.WithField("fileName", fileName).Debugln("Using cached weather icon")
 		return data, nil
 	}
 
@@ -47,7 +47,7 @@ func iconImage(iconCode string) ([]byte, error) {
 	url := iconURL(iconCode)
 
 	// Download the icon
-	logger.Printf("Downloading weather icon: %s", url)
+	log.WithField("url", url).Debugln("Downloading weather icon")
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
@@ -55,7 +55,8 @@ func iconImage(iconCode string) ([]byte, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+		log.Errorln("Unexpected status code")
+		return nil, errors.New("unexpected status code")
 	}
 
 	// Read the icon data
@@ -65,7 +66,7 @@ func iconImage(iconCode string) ([]byte, error) {
 	}
 
 	// Save the icon
-	logger.Printf("Saving weather icon: %s", fileName)
+	log.WithField("fileName", fileName).Debugln("Saving weather icon")
 	if err := os.WriteFile(fileName, iconData, 0644); err != nil {
 		return nil, err
 	}
@@ -74,7 +75,7 @@ func iconImage(iconCode string) ([]byte, error) {
 }
 
 func currentWeather() (map[string]interface{}, error) {
-	logger.Println("Fetching weather info")
+	log.Debugln("Fetching weather info")
 
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", urlCurrentWeather, nil)
@@ -104,7 +105,7 @@ func currentWeather() (map[string]interface{}, error) {
 }
 
 func currentAQI() (map[string]interface{}, error) {
-	logger.Println("Fetching air quality info")
+	log.Debugln("Fetching air quality info")
 
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", urlCurrentAQI, nil)
@@ -133,7 +134,7 @@ func currentAQI() (map[string]interface{}, error) {
 }
 
 func hourlyWeather() (map[string]interface{}, error) {
-	logger.Println("Fetching hourly weather info")
+	log.Debugln("Fetching hourly weather info")
 
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", urlHourlyWeather, nil)
