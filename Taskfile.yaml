@@ -3,11 +3,11 @@ version: 3
 tasks:
   clean:
     cmds:
-      - rm main.exe main
+      - rm dashink dashink.exe
 
   build:
     cmds:
-      - go build main.go
+      - go build -v -o dashink cmd/dashink/main.go
 
   run:
     cmds:
@@ -15,8 +15,8 @@ tasks:
 
   run-draw:
     cmds:
-      - go run main.go -draw
+      - go run main.go -debug -draw
 
   run-save:
     cmds:
-      - go run main.go -save
+      - go run main.go -debug -save
