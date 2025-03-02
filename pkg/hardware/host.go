@@ -26,7 +26,7 @@ const (
 )
 
 var (
-	device *inky.Dev
+	device *inky.DevImpression
 )
 
 func Setup() error {
@@ -59,10 +59,8 @@ func Setup() error {
 		return err
 	}
 
-	device, err = inky.New(spi, dc, reset, busy, &inky.Opts{
-		Model:       model,
-		ModelColor:  inky.Multi,
-		BorderColor: inky.Multi,
+	device, err = inky.NewImpression(spi, dc, reset, busy, &inky.Opts{
+		Model: model,
 	})
 	if err != nil {
 		log.WithError(err).Errorln("failed to create inky device")
