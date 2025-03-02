@@ -14,8 +14,9 @@ import (
 )
 
 var (
-	save = flag.Bool("save", false, "write image to file")
-	draw = flag.Bool("draw", false, "draw GUI to eink display")
+	save  = flag.Bool("save", false, "write image to file")
+	draw  = flag.Bool("draw", false, "draw GUI to eink display")
+	debug = flag.Bool("debug", false, "enable debug mode")
 )
 
 func main() {
@@ -23,6 +24,10 @@ func main() {
 	log.Println("Starting")
 	app := app.New()
 	canvas := gui.BuildCanvas(app)
+
+	if *debug {
+		log.SetLevel(log.DebugLevel)
+	}
 
 	if *save {
 		log.Println("Saving screenshot to file")
