@@ -75,8 +75,12 @@ func (w *WeatherWidget) CreateContent() fyne.CanvasObject {
 		description,
 	)
 
-	return container.NewHBox(
+	container := container.NewHBox(
 		weatherIcon,
 		tempContainer,
 	)
+
+	container.Resize(fyne.NewSize(200, 200))
+
+	return container
 }

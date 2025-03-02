@@ -9,6 +9,8 @@ import (
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/tools/playground"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/kedare/dashink/pkg/gui/widgets/weather"
 )
 
@@ -25,7 +27,13 @@ func BuildCanvas(app fyne.App) fyne.Canvas {
 
 	top := canvas.NewText("top bar", color.White)
 	weatherWidget := weather.NewWeatherWidget(41.4006716, 2.1832604).CreateContent()
-	content := container.NewBorder(top, nil, nil, nil, container.NewCenter(weatherWidget))
+
+	// Debug size of widget
+	log.Debugln("Weather widget size:", weatherWidget.MinSize())
+
+	grid := container.NewCenter(weatherWidget)
+
+	content := container.NewBorder(top, nil, nil, nil, grid)
 	c.SetContent(content)
 	c.Resize(fyne.NewSize(WIDTH, HEIGHT))
 
