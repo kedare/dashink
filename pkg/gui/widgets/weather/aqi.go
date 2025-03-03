@@ -36,7 +36,7 @@ func (w *AQIWidget) CreateContent() fyne.CanvasObject {
 	aqiValue.TextSize = 24
 
 	// Create AQI description label
-	aqiDesc := canvas.NewText(getAQIDescription(aqi.Main.Aqi), color.White)
+	aqiDesc := canvas.NewText(getAQIDescription(aqi.Main.Aqi), color.Black)
 	aqiDesc.TextSize = 14
 
 	// Layout the widgets

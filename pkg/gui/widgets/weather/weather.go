@@ -52,7 +52,7 @@ func (w *WeatherWidget) CreateContent() fyne.CanvasObject {
 	weatherIcon.Resize(fyne.NewSize(50, 50))
 
 	// Create temperature labels
-	currentTemp := canvas.NewText(fmt.Sprintf("%.1f°C", currentWeather.Main.Temp), color.White)
+	currentTemp := canvas.NewText(fmt.Sprintf("%.1f°C", currentWeather.Main.Temp), color.Black)
 	currentTemp.TextSize = 24
 
 	minMaxTemp := canvas.NewText(
@@ -60,12 +60,12 @@ func (w *WeatherWidget) CreateContent() fyne.CanvasObject {
 			currentWeather.Main.TempMin,
 			currentWeather.Main.TempMax,
 		),
-		color.White,
+		color.Black,
 	)
 	minMaxTemp.TextSize = 16
 
 	// Create description label
-	description := canvas.NewText(currentWeather.Weather[0].Description, color.White)
+	description := canvas.NewText(currentWeather.Weather[0].Description, color.Black)
 	description.TextSize = 14
 
 	// Layout the widgets

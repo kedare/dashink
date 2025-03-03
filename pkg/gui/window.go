@@ -1,14 +1,12 @@
 package gui
 
 import (
-  "time"
-	"image/color"
+	"time"
 
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/tools/playground"
+	"fyne.io/fyne/v2/widget"
 
 	"github.com/kedare/dashink/pkg/gui/widgets/weather"
 )
@@ -22,10 +20,10 @@ func BuildCanvas(app fyne.App) fyne.Canvas {
 	c := playground.NewSoftwareCanvas()
 	c.SetPadded(false)
 
-	fyne.CurrentApp().Settings().SetTheme(theme.DarkTheme())
+	//fyne.CurrentApp().Settings().SetTheme(theme.DarkTheme())
 
-  dateString := time.Now().Format("2006-01-02T15:04:05-07:00")
-	top := canvas.NewText(dateString, color.White)
+	dateString := time.Now().Format("2006-01-02T15:04:05-07:00")
+	top := widget.NewLabel(dateString)
 	weatherWidget := weather.NewWeatherWidget(41.4006716, 2.1832604).CreateContent()
 	aqiWidget := weather.NewAQIWidget(41.4006716, 2.1832604).CreateContent()
 
