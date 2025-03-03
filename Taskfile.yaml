@@ -11,12 +11,12 @@ tasks:
 
   run:
     cmds:
-      - go run main.go
+      - go run cmd/dashink/main.go
 
   run-draw:
     cmds:
-      - go run main.go -debug -draw
+      - go run cmd/dashink/main.go -debug -draw
 
   run-save:
     cmds:
-      - go run main.go -debug -save
+      - go run cmd/dashink/main.go -debug -save

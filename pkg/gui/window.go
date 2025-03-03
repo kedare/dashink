@@ -1,6 +1,7 @@
 package gui
 
 import (
+  "time"
 	"image/color"
 
 	"fyne.io/fyne/v2"
@@ -23,7 +24,8 @@ func BuildCanvas(app fyne.App) fyne.Canvas {
 
 	fyne.CurrentApp().Settings().SetTheme(theme.DarkTheme())
 
-	top := canvas.NewText("top bar", color.White)
+  dateString := time.Now().Format("2006-01-02T15:04:05-07:00")
+	top := canvas.NewText(dateString, color.White)
 	weatherWidget := weather.NewWeatherWidget(41.4006716, 2.1832604).CreateContent()
 	aqiWidget := weather.NewAQIWidget(41.4006716, 2.1832604).CreateContent()
 

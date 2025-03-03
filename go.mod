@@ -2,12 +2,18 @@ module github.com/kedare/dashink
 
 go 1.24.0
 
-require fyne.io/fyne/v2 v2.5.4
+require (
+	fyne.io/fyne/v2 v2.5.4
+	github.com/briandowns/openweathermap v0.21.1
+	github.com/sirupsen/logrus v1.9.3
+	periph.io/x/conn/v3 v3.7.2
+	periph.io/x/devices/v3 v3.7.4-0.20250302172059-ea55a05aa126
+	periph.io/x/host/v3 v3.8.4-0.20250117130906-28c0c75f3193
+)
 
 require (
 	fyne.io/systray v1.11.0 // indirect
 	github.com/BurntSushi/toml v1.4.0 // indirect
-	github.com/briandowns/openweathermap v0.21.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fredbi/uri v1.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
@@ -26,7 +32,6 @@ require (
 	github.com/nicksnyder/go-i18n/v2 v2.4.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rymdport/portal v0.3.0 // indirect
-	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/srwiley/oksvg v0.0.0-20221011165216-be6e8873101c // indirect
 	github.com/srwiley/rasterx v0.0.0-20220730225603-2ab79fcdd4ef // indirect
 	github.com/stretchr/testify v1.8.4 // indirect
@@ -37,7 +42,4 @@ require (
 	golang.org/x/sys v0.29.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	periph.io/x/conn/v3 v3.7.2 // indirect
-	periph.io/x/devices/v3 v3.7.4-0.20250302141124-eb90d535341b // indirect
-	periph.io/x/host/v3 v3.8.3 // indirect
 )
