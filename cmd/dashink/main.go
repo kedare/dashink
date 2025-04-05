@@ -19,6 +19,7 @@ var (
 	save  = flag.Bool("save", false, "write image to file")
 	draw  = flag.Bool("draw", false, "draw GUI to eink display")
 	debug = flag.Bool("debug", false, "enable debug mode")
+	jsonLogs = flag.Bool("json", false, "json logs")
 )
 
 func main() {
@@ -29,6 +30,10 @@ func main() {
 		stdlog.SetFlags(stdlog.LstdFlags | stdlog.Lshortfile)
 		log.SetLevel(log.DebugLevel)
 		log.Debugln("Debug mode enabled")
+	}
+
+	if *jsonLogs {
+		log.SetFormatter(&log.JSONFormatter{})
 	}
 
 	app := app.New()
