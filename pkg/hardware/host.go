@@ -67,8 +67,8 @@ func Setup() error {
 	device, err = inky.NewImpression(spi, dc, reset, busy, &inky.Opts{
 		Model:      inky.IMPRESSION73,
 		ModelColor: inky.Multi,
-		Height:     800,
-		Width:      480,
+		Height:     480,
+		Width:      800,
 	})
 	if err != nil {
 		log.WithError(err).Errorln("failed to create inky device")
@@ -85,8 +85,9 @@ func DrawImage(img image.Image) error {
 		return errors.New("device not initialized - call Setup() first")
 	}
 
+
 	bounds := img.Bounds()
-	if bounds.Dx() != device.Height() || bounds.Dy() != device.Width() {
+	if bounds.Dx() != device.Width() || bounds.Dy() != device.Height() {
 		log.Errorf("image dimensions %dx%d do not match device dimensions %dx%d",
 			bounds.Dx(), bounds.Dy(), device.Width(), device.Height())
 		return errors.New("image dimensions do not match device dimensions")

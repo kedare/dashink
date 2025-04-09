@@ -76,8 +76,8 @@ func mainImpl() error {
 		Model:       model,
 		ModelColor:  modelColor,
 		BorderColor: borderColor,
-		Height:      800,
-		Width:       480,
+		Height:      480,
+		Width:       800,
 	})
 	if err != nil {
 		return err
